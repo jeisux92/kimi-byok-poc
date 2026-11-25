@@ -1,0 +1,22 @@
+# Never commit application-owned or built files
+*.apkm
+*.apk
+*.apks
+*.xapk
+*.jks
+*.keystore
+*.der
+*.pem
+key.*
+
+# Local build trees
+build/
+decoded/
+out/
+dist/
+
+# Local caches
+.gradle/
+.idea/
+*.iml
+.DS_Store
