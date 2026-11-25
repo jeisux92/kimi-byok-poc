@@ -47,7 +47,7 @@ build.sh               — reproducible build/sign pipeline from a locally suppl
 ## Status
 
 - [x] Repository scaffold
-- [ ] BYOK module sources
-- [ ] Patch scripts
-- [ ] Build pipeline
-- [ ] Verified patched APK (built locally)
+- [x] BYOK module sources (`src/`)
+- [x] Patch scripts (`patcher/`)
+- [x] Build pipeline (`build.sh`)
+- [x] Verified patched APK (built locally; binary stays out of the repository)

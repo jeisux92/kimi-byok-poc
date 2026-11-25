@@ -18,13 +18,19 @@ Google PairIP licensing wrapper, v3-signed with a Play-managed key.
    - `com/pairip/application/Application.smali`: the single `LicenseClient.checkLicense(...)` call in
      `attachBaseContext` is removed. PairIP otherwise force-exits any non-Play-installed copy within
      ~30 seconds, which would kill the POC regardless of our changes. Nothing else in PairIP is touched.
-   - `h40/n.smali` (`f(Intent, m)` router): one branch prepended that delegates to the module's
-     `ByokRouter.handleDeepLink` so `kimi://byok` opens the BYOK experience.
+   - `com/moonshot/kimichat/route/ExternalLinkActivity.smali` (`onCreate`): one branch after
+     `super.onCreate` delegates to the module's `ByokRouter.handleDeepLink(Context, Intent)` and
+     finishes early when the URI is ours. This activity is the manifest entry for *all* `kimi://`
+     URIs and supplies the Activity as Context (the alternative chokepoint `h40.n.f` has no Context
+     register), so every `kimi://byok` link — browser, shortcut, adb — reaches the BYOK experience.
 5. **Manifest** — one `<activity-alias>` ("Kimi BYOK", MAIN/LAUNCHER → `ByokMainActivity`) and two
    `<activity>` entries. No permissions added, no other attributes changed.
-6. **Build & sign** — `apktool b`, zip-inject `classes5.dex`, 16 KB page alignment, fresh keystore,
-   `apksigner`. Re-signing intentionally breaks the upstream Google Sign-In (certificate-bound);
-   the BYOK module never uses upstream authentication.
+6. **Build & sign** — `apktool b` with `android:extractNativeLibs="true"` (one attribute flip so the
+   APK carries no page-alignment requirement; relevant when `zipalign` — an x86-only binary — is
+   unavailable on the build host; functionally neutral apart from a larger installed footprint),
+   `classes5.dex` appended via `zipfile`, fresh POC keystore, `apksigner`. Re-signing intentionally
+   breaks the upstream Google Sign-In (certificate-bound); the BYOK module never uses upstream
+   authentication.
 
 ## BYOK module design
 
